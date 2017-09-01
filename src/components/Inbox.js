@@ -6,8 +6,15 @@ export class Inbox extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            messages: props.messages
+            messages: []
         }
+    }
+
+    async componentDidMount() {
+        const messagesResponse = await fetch('/api/messages')
+        const messagesJson = await messagesResponse.json()
+        const messages = messagesJson._embedded.messages
+        this.setState({messages: messages})
     }
 
     handleCheckboxChange = (e, id) => {

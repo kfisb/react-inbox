@@ -69,7 +69,7 @@ class App extends Component {
         ]
         return (
             <div className="App">
-                <Inbox messages={seedData}/>
+                <Inbox />
             </div>
         );
     }
