@@ -28,15 +28,30 @@ export class Inbox extends Component {
         this.setState({messages: newMessages})
     }
 
-    handleStarChange = (e, id) => {
-        const newMessages = this.state.messages.map(element => {
-            if (element.id === id) {
-                element.starred = !element.starred
-            }
-            return element
+    patchMethod(body) {
+        fetch('/api/messages', {
+            method: 'PATCH',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
         })
+    }
 
-        this.setState({messages: newMessages})
+    handleStarChange = (e, id) => {
+        const newMessages = this.state.messages
+        const index = newMessages.findIndex(message => message.id === id)
+        newMessages[index].starred = !newMessages[index].starred
+
+        const patchBody = {
+            messageIds: [id],
+            command: 'star',
+            star: newMessages[index].starred
+        }
+        this.patchMethod(patchBody)
+
+        this.setState({newMessages})
     }
 
     handleToolbarMessageCheckboxClick = () => {
@@ -71,6 +86,8 @@ export class Inbox extends Component {
             return element
         })
 
+        this.patchReadUnread(newMessages, true)
+
         this.setState({messages: newMessages})
     }
 
@@ -82,11 +99,30 @@ export class Inbox extends Component {
             return element
         })
 
+        this.patchReadUnread(newMessages, false)
+
         this.setState({messages: newMessages})
+    }
+
+    patchReadUnread(messages, status) {
+        const messageIds = messages.filter(element => element.read === status).map(element => element.id)
+        const patchBody = {
+            messageIds: messageIds,
+            command: 'read',
+            read: status,
+        }
+        this.patchMethod(patchBody)
     }
 
     handleDeleteMessages = () => {
         const newMessages = this.state.messages.filter(element => !element.selected)
+
+        const patchBody = {
+            messageIds: this.state.messages.filter(element => element.selected).map(element => element.id),
+            command: 'delete',
+        }
+        this.patchMethod(patchBody)
+
         this.setState({messages: newMessages})
     }
 
@@ -100,6 +136,8 @@ export class Inbox extends Component {
             return element
         })
 
+        this.patchAddRemoveLabel('addLabel', e.target.value)
+
         this.setState({messages: newMessages})
     }
 
@@ -111,7 +149,20 @@ export class Inbox extends Component {
             return element
         })
 
+        this.patchAddRemoveLabel('removeLabel', e.target.value)
+
         this.setState({messages: newMessages})
+    }
+
+    patchAddRemoveLabel(status, value) {
+        const messageIds = this.state.messages.filter(element => element.selected).map(element => element.id)
+
+        const patchBody = {
+            messageIds: messageIds,
+            command: status,
+            label: value,
+        }
+        this.patchMethod(patchBody)
     }
 
     render() {
