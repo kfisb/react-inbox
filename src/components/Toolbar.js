@@ -23,7 +23,6 @@ const Toolbar = ({
 
     const unreadMessages = messages.filter(element => element.read === false)
 
-
     return (
         <div className="row toolbar">
             <div className="col-md-12">
