@@ -8,6 +8,7 @@ const Toolbar = ({
                      handleDeleteMessages,
                      handleApplyLabel,
                      handleRemoveLabel,
+                     toggleComposeForm,
                  }) => {
 
     let isMessagesSelected = true
@@ -30,6 +31,10 @@ const Toolbar = ({
                     <span className="badge badge">{unreadMessages.length}</span>
                     {unreadMessages.length === 1 ? `unread message` : `unread messages`}
                 </p>
+
+                <a className="btn btn-danger" onClick={toggleComposeForm}>
+                    <i className="fa fa-plus"></i>
+                </a>
 
                 <button className="btn btn-default" onClick={handleToolbarMessageCheckboxClick}>
                     <i className={checkedMessagesStyle}></i>

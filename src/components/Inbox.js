@@ -1,12 +1,14 @@
 import React, {Component} from 'react'
 import MessageList from './MessageList'
 import Toolbar from './Toolbar'
+import ComposeForm from './ComposeForm'
 
 export class Inbox extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            messages: []
+            messages: [],
+            composeForm: false,
         }
     }
 
@@ -34,7 +36,7 @@ export class Inbox extends Component {
             body: JSON.stringify(body),
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
             },
         })
     }
@@ -165,20 +167,45 @@ export class Inbox extends Component {
         this.patchMethod(patchBody)
     }
 
+    toggleComposeForm = () => {
+        this.setState({composeForm: !this.state.composeForm})
+    }
+
+    handleComposeFormSubmit = async (body) => {
+        const response = await fetch('api/messages', {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+        })
+        const responseJson = await response.json()
+
+        const inboxMessages = this.state.messages
+        inboxMessages.push(responseJson)
+        this.setState({messages: inboxMessages, composeForm: false})
+    }
+
     render() {
+        const {messages, composeForm} = this.state
         return (
             <div>
                 <Toolbar
-                    messages={this.state.messages}
+                    messages={messages}
                     handleToolbarMessageCheckboxClick={this.handleToolbarMessageCheckboxClick}
                     handleMarkAsRead={this.handleMarkAsRead}
                     handleMarkAsUnread={this.handleMarkAsUnread}
                     handleDeleteMessages={this.handleDeleteMessages}
                     handleApplyLabel={this.handleApplyLabel}
                     handleRemoveLabel={this.handleRemoveLabel}
+                    toggleComposeForm={this.toggleComposeForm}
                 />
+                {composeForm &&
+                <ComposeForm handleComposeFormSubmit={this.handleComposeFormSubmit} />
+                }
                 <MessageList
-                    messages={this.state.messages}
+                    messages={messages}
                     checkboxChange={this.handleCheckboxChange}
                     starChange={this.handleStarChange}
                 />
