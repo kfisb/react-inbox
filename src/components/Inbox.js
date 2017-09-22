@@ -2,25 +2,28 @@ import React, {Component} from 'react'
 import MessageList from './MessageList'
 import Toolbar from './Toolbar'
 import ComposeForm from './ComposeForm'
+import {connect} from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { toggleComposeForm } from '../actions'
 
 export class Inbox extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            messages: [],
-            composeForm: false,
+            //messages: [],
+            // composeForm: false,
         }
     }
 
-    async componentDidMount() {
-        const messagesResponse = await fetch('/api/messages')
-        const messagesJson = await messagesResponse.json()
-        const messages = messagesJson._embedded.messages
-        this.setState({messages: messages})
-    }
+    // async componentDidMount() {
+    //     const messagesResponse = await fetch('/api/messages')
+    //     const messagesJson = await messagesResponse.json()
+    //     const messages = messagesJson._embedded.messages
+    //     this.setState({messages: messages})
+    // }
 
     handleCheckboxChange = (e, id) => {
-        const newMessages = this.state.messages.map(element => {
+        const newMessages = this.props.messages.map(element => {
             if (element.id === id) {
                 element.selected = e.target.checked
             }
@@ -42,7 +45,7 @@ export class Inbox extends Component {
     }
 
     handleStarChange = (e, id) => {
-        const newMessages = this.state.messages
+        const newMessages = this.props.messages
         const index = newMessages.findIndex(message => message.id === id)
         newMessages[index].starred = !newMessages[index].starred
 
@@ -58,10 +61,10 @@ export class Inbox extends Component {
 
     handleToolbarMessageCheckboxClick = () => {
         let newMessages
-        const selectedMessages = this.state.messages.filter(element => element.selected === true)
-        if (selectedMessages.length === this.state.messages.length) {
+        const selectedMessages = this.props.messages.filter(element => element.selected === true)
+        if (selectedMessages.length === this.props.messages.length) {
             //all are selected - need to de-select them
-            newMessages = this.state.messages.map(element => {
+            newMessages = this.props.messages.map(element => {
                 if (element.selected) {
                     element.selected = false
                 }
@@ -69,7 +72,7 @@ export class Inbox extends Component {
             })
         } else {
             //zero or some are selected - need to select all of them
-            newMessages = this.state.messages.map(element => {
+            newMessages = this.props.messages.map(element => {
                 if (!element.selected) {
                     element.selected = true
                 }
@@ -81,7 +84,7 @@ export class Inbox extends Component {
     }
 
     handleMarkAsRead = () => {
-        const newMessages = this.state.messages.map(element => {
+        const newMessages = this.props.messages.map(element => {
             if (element.selected) {
                 element.read = true
             }
@@ -94,7 +97,7 @@ export class Inbox extends Component {
     }
 
     handleMarkAsUnread = () => {
-        const newMessages = this.state.messages.map(element => {
+        const newMessages = this.props.messages.map(element => {
             if (element.selected) {
                 element.read = false
             }
@@ -117,10 +120,10 @@ export class Inbox extends Component {
     }
 
     handleDeleteMessages = () => {
-        const newMessages = this.state.messages.filter(element => !element.selected)
+        const newMessages = this.props.messages.filter(element => !element.selected)
 
         const patchBody = {
-            messageIds: this.state.messages.filter(element => element.selected).map(element => element.id),
+            messageIds: this.props.messages.filter(element => element.selected).map(element => element.id),
             command: 'delete',
         }
         this.patchMethod(patchBody)
@@ -129,7 +132,7 @@ export class Inbox extends Component {
     }
 
     handleApplyLabel = (e) => {
-        const newMessages = this.state.messages.map(element => {
+        const newMessages = this.props.messages.map(element => {
             if (element.selected) {
                 if (!element.labels.includes(e.target.value)) {
                     element.labels.push(e.target.value)
@@ -144,7 +147,7 @@ export class Inbox extends Component {
     }
 
     handleRemoveLabel = (e) => {
-        const newMessages = this.state.messages.map(element => {
+        const newMessages = this.props.messages.map(element => {
             if (element.selected) {
                 element.labels = element.labels.filter(element => element !== e.target.value)
             }
@@ -157,7 +160,7 @@ export class Inbox extends Component {
     }
 
     patchAddRemoveLabel(status, value) {
-        const messageIds = this.state.messages.filter(element => element.selected).map(element => element.id)
+        const messageIds = this.props.messages.filter(element => element.selected).map(element => element.id)
 
         const patchBody = {
             messageIds: messageIds,
@@ -168,6 +171,7 @@ export class Inbox extends Component {
     }
 
     toggleComposeForm = () => {
+        //action here to flip it
         this.setState({composeForm: !this.state.composeForm})
     }
 
@@ -182,13 +186,13 @@ export class Inbox extends Component {
         })
         const responseJson = await response.json()
 
-        const inboxMessages = this.state.messages
+        const inboxMessages = this.props.messages
         inboxMessages.push(responseJson)
         this.setState({messages: inboxMessages, composeForm: false})
     }
 
     render() {
-        const {messages, composeForm} = this.state
+        const {messages, composeForm} = this.props
         return (
             <div>
                 <Toolbar
@@ -202,7 +206,7 @@ export class Inbox extends Component {
                     toggleComposeForm={this.toggleComposeForm}
                 />
                 {composeForm &&
-                <ComposeForm handleComposeFormSubmit={this.handleComposeFormSubmit} />
+                <ComposeForm handleComposeFormSubmit={this.handleComposeFormSubmit}/>
                 }
                 <MessageList
                     messages={messages}
@@ -214,4 +218,17 @@ export class Inbox extends Component {
     }
 }
 
-export default Inbox
+const mapStateToProps = state => ({
+    messages: state.messages.all,
+    composeForm: state.composeForm,
+})
+
+// const mapDispatchToProps = () => ({})
+const mapDispatchToProps = dispatch => bindActionCreators({
+    theActionCalledInThisComponent: someActionImported,
+}, dispatch)
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Inbox)
