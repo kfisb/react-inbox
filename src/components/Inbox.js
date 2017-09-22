@@ -4,7 +4,7 @@ import Toolbar from './Toolbar'
 import ComposeForm from './ComposeForm'
 import {connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { toggleComposeForm } from '../actions'
+import { toggleComposeForm, composeMessage, messageSelection } from '../actions'
 
 export class Inbox extends Component {
     constructor(props) {
@@ -15,22 +15,9 @@ export class Inbox extends Component {
         }
     }
 
-    // async componentDidMount() {
-    //     const messagesResponse = await fetch('/api/messages')
-    //     const messagesJson = await messagesResponse.json()
-    //     const messages = messagesJson._embedded.messages
-    //     this.setState({messages: messages})
-    // }
-
+    //done
     handleCheckboxChange = (e, id) => {
-        const newMessages = this.props.messages.map(element => {
-            if (element.id === id) {
-                element.selected = e.target.checked
-            }
-            return element
-        })
-
-        this.setState({messages: newMessages})
+        this.props.messageSelection(e.target.checked, id)
     }
 
     patchMethod(body) {
@@ -170,25 +157,14 @@ export class Inbox extends Component {
         this.patchMethod(patchBody)
     }
 
-    toggleComposeForm = () => {
-        //action here to flip it
-        this.setState({composeForm: !this.state.composeForm})
+    //done
+    handleToggleComposeForm = () => {
+        this.props.toggleComposeForm(!this.props.composeForm)
     }
 
+    //done
     handleComposeFormSubmit = async (body) => {
-        const response = await fetch('api/messages', {
-            method: 'POST',
-            body: JSON.stringify(body),
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            }
-        })
-        const responseJson = await response.json()
-
-        const inboxMessages = this.props.messages
-        inboxMessages.push(responseJson)
-        this.setState({messages: inboxMessages, composeForm: false})
+        this.props.composeMessage(body)
     }
 
     render() {
@@ -203,7 +179,7 @@ export class Inbox extends Component {
                     handleDeleteMessages={this.handleDeleteMessages}
                     handleApplyLabel={this.handleApplyLabel}
                     handleRemoveLabel={this.handleRemoveLabel}
-                    toggleComposeForm={this.toggleComposeForm}
+                    toggleComposeForm={this.handleToggleComposeForm}
                 />
                 {composeForm &&
                 <ComposeForm handleComposeFormSubmit={this.handleComposeFormSubmit}/>
@@ -220,12 +196,13 @@ export class Inbox extends Component {
 
 const mapStateToProps = state => ({
     messages: state.messages.all,
-    composeForm: state.composeForm,
+    composeForm: state.messages.composeForm,
 })
 
-// const mapDispatchToProps = () => ({})
 const mapDispatchToProps = dispatch => bindActionCreators({
-    theActionCalledInThisComponent: someActionImported,
+    toggleComposeForm: toggleComposeForm,
+    composeMessage: composeMessage,
+    messageSelection: messageSelection,
 }, dispatch)
 
 export default connect(
