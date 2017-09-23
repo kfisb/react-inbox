@@ -35,7 +35,11 @@ const Message = ({
                         />
                     </div>
                     <div className="col-xs-2">
-                        <i className={starStyle} onClick={(e) => starChange(e, id)}></i>
+                        <i
+                            className={starStyle}
+                            name="star"
+                            onClick={() => starChange(id)}
+                        />
                     </div>
                 </div>
             </div>

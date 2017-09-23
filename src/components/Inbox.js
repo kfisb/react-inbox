@@ -4,7 +4,7 @@ import Toolbar from './Toolbar'
 import ComposeForm from './ComposeForm'
 import {connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { toggleComposeForm, composeMessage, messageSelection } from '../actions'
+import { toggleComposeForm, composeMessage, messageSelection, starMessage } from '../actions'
 
 export class Inbox extends Component {
     constructor(props) {
@@ -20,6 +20,7 @@ export class Inbox extends Component {
         this.props.messageSelection(e.target.checked, id)
     }
 
+    //only a helper method
     patchMethod(body) {
         fetch('/api/messages', {
             method: 'PATCH',
@@ -31,19 +32,9 @@ export class Inbox extends Component {
         })
     }
 
-    handleStarChange = (e, id) => {
-        const newMessages = this.props.messages
-        const index = newMessages.findIndex(message => message.id === id)
-        newMessages[index].starred = !newMessages[index].starred
-
-        const patchBody = {
-            messageIds: [id],
-            command: 'star',
-            star: newMessages[index].starred
-        }
-        this.patchMethod(patchBody)
-
-        this.setState({newMessages})
+    //done
+    handleStarChange = (id) => {
+        this.props.starMessage(this.props.messageById[id], id)
     }
 
     handleToolbarMessageCheckboxClick = () => {
@@ -196,6 +187,7 @@ export class Inbox extends Component {
 
 const mapStateToProps = state => ({
     messages: state.messages.all,
+    messageById: state.messages.byId,
     composeForm: state.messages.composeForm,
 })
 
@@ -203,6 +195,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     toggleComposeForm: toggleComposeForm,
     composeMessage: composeMessage,
     messageSelection: messageSelection,
+    starMessage: starMessage,
 }, dispatch)
 
 export default connect(

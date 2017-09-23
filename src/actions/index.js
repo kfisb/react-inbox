@@ -11,11 +11,36 @@ export function fetchMessages() {
 }
 
 export const MESSAGE_SELECTION = 'MESSAGE_SELECTION'
-export function messageSelection(messageSelected, id) {
+export function messageSelection(selected, id) {
     return (dispatch) => {
         dispatch({
             type: MESSAGE_SELECTION,
-            messageSelected,
+            selected,
+            id,
+        })
+    }
+}
+
+export const STAR_MESSAGE = 'STAR_MESSAGE'
+export function starMessage(message, id) {
+    return (dispatch) => {
+        const patchBody = {
+            messageIds: [id],
+            command: 'star',
+            star: !message.starred
+        }
+        fetch('/api/messages', {
+            method: 'PATCH',
+            body: JSON.stringify(patchBody),
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+        })
+
+        dispatch({
+            type: STAR_MESSAGE,
+            message,
             id,
         })
     }
