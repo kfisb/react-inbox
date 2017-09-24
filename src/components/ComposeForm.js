@@ -1,6 +1,9 @@
 import React from 'react'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
+import {composeMessage} from "../actions/index"
 
-const ComposeForm = ({handleComposeFormSubmit}) => {
+const ComposeForm = ({composeMessage}) => {
 
     const onSubmitForm = (e) => {
         e.preventDefault()
@@ -10,7 +13,7 @@ const ComposeForm = ({handleComposeFormSubmit}) => {
             body: e.target.body.value,
         }
 
-        handleComposeFormSubmit(postBody)
+        composeMessage(postBody)
     }
 
     return (
@@ -42,4 +45,10 @@ const ComposeForm = ({handleComposeFormSubmit}) => {
     )
 }
 
-export default ComposeForm
+const mapStateToProps = state => ({})
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+    composeMessage: composeMessage,
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(ComposeForm)

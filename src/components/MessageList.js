@@ -1,10 +1,11 @@
 import React from 'react'
 import Message from './Message'
+import {connect} from 'react-redux'
 
 const MessageList = ({
                          messages,
-    checkboxChange,
-    starChange,
+                         checkboxChange,
+                         starChange,
                      }) => (
     <div>
         {messages.map(message =>
@@ -18,4 +19,7 @@ const MessageList = ({
     </div>
 )
 
-export default MessageList
+const mapStateToProps = state => ({
+    messages: state.messages.all,
+})
+export default connect(mapStateToProps)(MessageList)

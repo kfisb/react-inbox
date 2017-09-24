@@ -1,4 +1,7 @@
 import React from 'react'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
+import {toggleComposeForm} from "../actions/index"
 
 const Toolbar = ({
                      messages,
@@ -8,7 +11,8 @@ const Toolbar = ({
                      handleDeleteMessages,
                      handleApplyLabel,
                      handleRemoveLabel,
-                     toggleComposeForm,
+                     composeForm,
+                     composeMessage,
                  }) => {
 
     let isMessagesSelected = true
@@ -22,6 +26,11 @@ const Toolbar = ({
     }
 
     const unreadMessages = messages.filter(element => element.read === false)
+
+
+    const toggleComposeForm = () => {
+        composeMessage(!composeForm)
+    }
 
     return (
         <div className="row toolbar">
@@ -78,4 +87,13 @@ const Toolbar = ({
     )
 }
 
-export default Toolbar
+const mapStateToProps = state => ({
+    messages: state.messages.all,
+    composeForm: state.messages.composeForm,
+})
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+    composeMessage: toggleComposeForm,
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(Toolbar)

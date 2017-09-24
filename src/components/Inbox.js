@@ -3,8 +3,8 @@ import MessageList from './MessageList'
 import Toolbar from './Toolbar'
 import ComposeForm from './ComposeForm'
 import {connect} from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { toggleComposeForm, composeMessage, messageSelection, starMessage } from '../actions'
+import {bindActionCreators} from 'redux'
+import {messageSelection, messagesRead, messagesUnread, starMessage, toolbarMessageSelection, deleteMessages} from '../actions'
 
 export class Inbox extends Component {
     constructor(props) {
@@ -38,75 +38,30 @@ export class Inbox extends Component {
     }
 
     handleToolbarMessageCheckboxClick = () => {
-        let newMessages
-        const selectedMessages = this.props.messages.filter(element => element.selected === true)
-        if (selectedMessages.length === this.props.messages.length) {
-            //all are selected - need to de-select them
-            newMessages = this.props.messages.map(element => {
-                if (element.selected) {
-                    element.selected = false
-                }
-                return element
-            })
-        } else {
-            //zero or some are selected - need to select all of them
-            newMessages = this.props.messages.map(element => {
-                if (!element.selected) {
-                    element.selected = true
-                }
-                return element
-            })
-        }
-
-        this.setState({messages: newMessages})
+        this.props.toolbarMessageSelection()
     }
 
+    //done
     handleMarkAsRead = () => {
-        const newMessages = this.props.messages.map(element => {
-            if (element.selected) {
-                element.read = true
-            }
-            return element
-        })
-
-        this.patchReadUnread(newMessages, true)
-
-        this.setState({messages: newMessages})
+        const messageIds = this.props.messages
+            .filter(element => element.selected === true)
+            .map(element => element.id)
+        this.props.messagesRead(messageIds)
     }
 
+    //done
     handleMarkAsUnread = () => {
-        const newMessages = this.props.messages.map(element => {
-            if (element.selected) {
-                element.read = false
-            }
-            return element
-        })
-
-        this.patchReadUnread(newMessages, false)
-
-        this.setState({messages: newMessages})
-    }
-
-    patchReadUnread(messages, status) {
-        const messageIds = messages.filter(element => element.read === status).map(element => element.id)
-        const patchBody = {
-            messageIds: messageIds,
-            command: 'read',
-            read: status,
-        }
-        this.patchMethod(patchBody)
+        const messageIds = this.props.messages
+            .filter(element => element.selected === true)
+            .map(element => element.id)
+        this.props.messagesUnread(messageIds)
     }
 
     handleDeleteMessages = () => {
-        const newMessages = this.props.messages.filter(element => !element.selected)
-
-        const patchBody = {
-            messageIds: this.props.messages.filter(element => element.selected).map(element => element.id),
-            command: 'delete',
-        }
-        this.patchMethod(patchBody)
-
-        this.setState({messages: newMessages})
+        const messageIds = this.props.messages
+            .filter(element => element.selected)
+            .map(element => element.id)
+        this.props.deleteMessages(messageIds)
     }
 
     handleApplyLabel = (e) => {
@@ -148,35 +103,22 @@ export class Inbox extends Component {
         this.patchMethod(patchBody)
     }
 
-    //done
-    handleToggleComposeForm = () => {
-        this.props.toggleComposeForm(!this.props.composeForm)
-    }
-
-    //done
-    handleComposeFormSubmit = async (body) => {
-        this.props.composeMessage(body)
-    }
-
     render() {
-        const {messages, composeForm} = this.props
+        const {composeForm} = this.props
         return (
             <div>
                 <Toolbar
-                    messages={messages}
                     handleToolbarMessageCheckboxClick={this.handleToolbarMessageCheckboxClick}
                     handleMarkAsRead={this.handleMarkAsRead}
                     handleMarkAsUnread={this.handleMarkAsUnread}
                     handleDeleteMessages={this.handleDeleteMessages}
                     handleApplyLabel={this.handleApplyLabel}
                     handleRemoveLabel={this.handleRemoveLabel}
-                    toggleComposeForm={this.handleToggleComposeForm}
                 />
                 {composeForm &&
-                <ComposeForm handleComposeFormSubmit={this.handleComposeFormSubmit}/>
+                <ComposeForm/>
                 }
                 <MessageList
-                    messages={messages}
                     checkboxChange={this.handleCheckboxChange}
                     starChange={this.handleStarChange}
                 />
@@ -192,10 +134,12 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    toggleComposeForm: toggleComposeForm,
-    composeMessage: composeMessage,
     messageSelection: messageSelection,
     starMessage: starMessage,
+    messagesRead: messagesRead,
+    messagesUnread: messagesUnread,
+    toolbarMessageSelection: toolbarMessageSelection,
+    deleteMessages: deleteMessages,
 }, dispatch)
 
 export default connect(
