@@ -120,6 +120,42 @@ export function toolbarMessageSelection() {
     }
 }
 
+export const APPLY_LABEL = 'APPLY_LABEL'
+
+export function applyLabel(messageIds, label) {
+    return async (dispatch) => {
+        const patchBody = {
+            messageIds: messageIds,
+            command: 'addLabel',
+            label: label,
+        }
+        await patchMethod(patchBody)
+
+        dispatch({
+            type: 'APPLY_LABEL',
+            label,
+        })
+    }
+}
+
+export const REMOVE_LABEL = 'REMOVE_LABEL'
+
+export function removeLabel(messageIds, label) {
+    return async (dispatch) => {
+        const patchBody = {
+            messageIds: messageIds,
+            command: 'removeLabel',
+            label: label,
+        }
+        await patchMethod(patchBody)
+
+        dispatch({
+            type: 'REMOVE_LABEL',
+            label,
+        })
+    }
+}
+
 export const DELETE_MESSAGES = 'DELETE_MESSAGES'
 
 export function deleteMessages(messageIds) {

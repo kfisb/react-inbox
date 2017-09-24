@@ -1,5 +1,7 @@
 import {combineReducers} from 'redux'
 import {
+    APPLY_LABEL,
+    DELETE_MESSAGES,
     MESSAGE_SELECTION,
     MESSAGE_SUBMITTED,
     MESSAGES_READ,
@@ -8,7 +10,7 @@ import {
     STAR_MESSAGE,
     TOGGLE_COMPOSE_FORM,
     TOOLBAR_MESSAGE_SELECTION,
-    DELETE_MESSAGES,
+    REMOVE_LABEL,
 } from '../actions'
 
 function messages(state = {byId: {}, all: [], composeForm: false}, action) {
@@ -116,6 +118,30 @@ function messages(state = {byId: {}, all: [], composeForm: false}, action) {
                 //     action.updatedMessages, // not working
                 // ]
                 all: updatedUnreadMessages, // this works
+            }
+        case APPLY_LABEL:
+            const newAddedLabelMessages = state.all.map(element => {
+                if (element.selected) {
+                    if (!element.labels.includes(action.label)) {
+                        element.labels.push(action.label)
+                    }
+                }
+                return element
+            })
+            return {
+                ...state,
+                all: newAddedLabelMessages
+            }
+            case REMOVE_LABEL:
+            const newRemovedLabelMessages = state.all.map(element => {
+                if (element.selected) {
+                    element.labels = element.labels.filter(element => element !== action.label)
+                }
+                return element
+            })
+            return {
+                ...state,
+                all: newRemovedLabelMessages
             }
         case DELETE_MESSAGES:
             const activeMessages = state.all.filter(element => !element.selected)
