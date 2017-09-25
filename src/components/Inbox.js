@@ -17,7 +17,6 @@ import {
 
 const Inbox = ({
                    messages,
-                   messageById,
                    composeForm,
                    messageSelection,
                    starMessage,
@@ -30,13 +29,13 @@ const Inbox = ({
                }) => {
 
     //done
-    const handleCheckboxChange = (e, id) => {
-        messageSelection(e.target.checked, id)
+    const handleCheckboxChange = (e, index) => {
+        messageSelection(e.target.checked, index)
     }
 
     //done
-    const handleStarChange = (id) => {
-        starMessage(messageById[id], id)
+    const handleStarChange = (index) => {
+        starMessage(messages[index])
     }
 
     //done

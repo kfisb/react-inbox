@@ -13,22 +13,22 @@ export function fetchMessages() {
 
 export const MESSAGE_SELECTION = 'MESSAGE_SELECTION'
 
-export function messageSelection(selected, id) {
+export function messageSelection(selected, index) {
     return (dispatch) => {
         dispatch({
             type: MESSAGE_SELECTION,
             selected,
-            id,
+            index,
         })
     }
 }
 
 export const STAR_MESSAGE = 'STAR_MESSAGE'
 
-export function starMessage(message, id) {
+export function starMessage(message) {
     return (dispatch) => {
         const patchBody = {
-            messageIds: [id],
+            messageIds: [message.id],
             command: 'star',
             star: !message.starred
         }
@@ -37,7 +37,6 @@ export function starMessage(message, id) {
         dispatch({
             type: STAR_MESSAGE,
             message,
-            id,
         })
     }
 }

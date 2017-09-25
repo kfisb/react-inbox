@@ -1,7 +1,7 @@
 import React from 'react'
 
 const Message = ({
-                     id,
+                     index,
                      message,
                      checkboxChange,
                      starChange,
@@ -30,7 +30,7 @@ const Message = ({
                         <input
                             type="checkbox"
                             name="checkbox"
-                            onChange={(e) => checkboxChange(e, id)}
+                            onChange={(e) => checkboxChange(e, index)}
                             checked={message.selected ? true : false}
                         />
                     </div>
@@ -38,7 +38,7 @@ const Message = ({
                         <i
                             className={starStyle}
                             name="star"
-                            onClick={() => starChange(id)}
+                            onClick={() => starChange(index)}
                         />
                     </div>
                 </div>

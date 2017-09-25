@@ -13,17 +13,11 @@ import {
     REMOVE_LABEL,
 } from '../actions'
 
-function messages(state = {byId: {}, all: [], composeForm: false}, action) {
+function messages(state = {all: [], composeForm: false}, action) {
     switch (action.type) {
         case MESSAGES_RECEIVED:
-            const messagesById = action.messages.reduce((result, message) => {
-                result[message.id] = message
-                return result
-            }, {})
-
             return {
                 ...state,
-                byId: messagesById,
                 all: action.messages,
             }
         case TOGGLE_COMPOSE_FORM:
@@ -32,14 +26,8 @@ function messages(state = {byId: {}, all: [], composeForm: false}, action) {
                 composeForm: action.composeForm
             }
         case MESSAGE_SUBMITTED:
-            // const additionalMessagesById = action.messages.reduce((result, message) => {
-            //     result[message.id] = message
-            //     return result
-            // }, {})
-
             return {
                 ...state,
-                // byId: {...state.byId, action.newMessage},
                 all: [
                     ...state.all,
                     action.newMessage
@@ -51,8 +39,7 @@ function messages(state = {byId: {}, all: [], composeForm: false}, action) {
                 ...state,
                 all: [
                     ...state.all,
-                    // ...state.all[action.id - 1].selected = action.selected,
-                    ...state.byId[action.id].selected = action.selected,
+                    ...state.all[action.index].selected = action.selected,
                 ]
             }
         case STAR_MESSAGE:
@@ -83,8 +70,6 @@ function messages(state = {byId: {}, all: [], composeForm: false}, action) {
                     return element
                 })
             }
-
-            // this.setState({messages: newMessages})
             return {
                 ...state,
                 all: newMessages,

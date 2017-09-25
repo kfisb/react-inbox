@@ -8,10 +8,10 @@ const MessageList = ({
                          starChange,
                      }) => (
     <div>
-        {messages.map(message =>
+        {messages.map((message, index) =>
             <Message
-                key={message.id}
-                id={message.id}
+                key={index}
+                index={index}
                 message={message}
                 checkboxChange={checkboxChange}
                 starChange={starChange}
