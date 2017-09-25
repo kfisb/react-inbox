@@ -6,7 +6,7 @@ export function fetchMessages() {
         const messagesJson = await messagesResponse.json()
         dispatch({
             type: MESSAGES_RECEIVED,
-            messages: messagesJson._embedded.messages
+            messages: messagesJson._embedded.messages,
         })
     }
 }
@@ -30,7 +30,7 @@ export function starMessage(message) {
         const patchBody = {
             messageIds: [message.id],
             command: 'star',
-            star: !message.starred
+            star: !message.starred,
         }
         patchMethod(patchBody)
 
@@ -86,7 +86,6 @@ export function messagesRead(messageIds) {
 
         dispatch({
             type: MESSAGES_READ,
-            // updatedMessages: selectedMessages, // not working
         })
     }
 }
@@ -104,7 +103,6 @@ export function messagesUnread(messageIds) {
 
         dispatch({
             type: MESSAGES_UNREAD,
-            // updatedMessages: selectedMessages, // not working
         })
     }
 }
@@ -166,7 +164,7 @@ export function deleteMessages(messageIds) {
         await patchMethod(patchBody)
 
         dispatch({
-            type: 'DELETE_MESSAGES'
+            type: 'DELETE_MESSAGES',
         })
     }
 }

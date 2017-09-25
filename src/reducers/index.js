@@ -83,11 +83,7 @@ function messages(state = {all: [], composeForm: false}, action) {
             })
             return {
                 ...state,
-                // all: [
-                //     ...state.all,
-                //     action.updatedMessages, // not working
-                // ]
-                all: updatedReadMessages, // this works
+                all: updatedReadMessages,
             }
         case MESSAGES_UNREAD:
             const updatedUnreadMessages = state.all.map(element => {
@@ -98,11 +94,7 @@ function messages(state = {all: [], composeForm: false}, action) {
             })
             return {
                 ...state,
-                // all: [
-                //     ...state.all,
-                //     action.updatedMessages, // not working
-                // ]
-                all: updatedUnreadMessages, // this works
+                all: updatedUnreadMessages,
             }
         case APPLY_LABEL:
             const newAddedLabelMessages = state.all.map(element => {
