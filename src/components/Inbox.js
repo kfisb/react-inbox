@@ -28,22 +28,18 @@ const Inbox = ({
                    removeLabel,
                }) => {
 
-    //done
     const handleCheckboxChange = (e, index) => {
         messageSelection(e.target.checked, index)
     }
 
-    //done
     const handleStarChange = (index) => {
         starMessage(messages[index])
     }
 
-    //done
     const handleToolbarMessageCheckboxClick = () => {
         toolbarMessageSelection()
     }
 
-    //done
     const handleMarkAsRead = () => {
         const messageIds = messages
             .filter(element => element.selected === true)
@@ -51,7 +47,6 @@ const Inbox = ({
         messagesRead(messageIds)
     }
 
-    //done
     const handleMarkAsUnread = () => {
         const messageIds = messages
             .filter(element => element.selected === true)
@@ -59,7 +54,6 @@ const Inbox = ({
         messagesUnread(messageIds)
     }
 
-    //done
     const handleDeleteMessages = () => {
         const messageIds = messages
             .filter(element => element.selected)
@@ -67,13 +61,11 @@ const Inbox = ({
         deleteMessages(messageIds)
     }
 
-    //done
     const handleApplyLabel = (e) => {
         const messageIds = messages.filter(element => element.selected).map(element => element.id)
         applyLabel(messageIds, e.target.value)
     }
 
-    //done
     const handleRemoveLabel = (e) => {
         const messageIds = messages.filter(element => element.selected).map(element => element.id)
         removeLabel(messageIds, e.target.value)

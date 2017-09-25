@@ -7,10 +7,10 @@ import {
     MESSAGES_READ,
     MESSAGES_RECEIVED,
     MESSAGES_UNREAD,
+    REMOVE_LABEL,
     STAR_MESSAGE,
     TOGGLE_COMPOSE_FORM,
     TOOLBAR_MESSAGE_SELECTION,
-    REMOVE_LABEL,
 } from '../actions'
 
 function messages(state = {all: [], composeForm: false}, action) {
@@ -117,7 +117,7 @@ function messages(state = {all: [], composeForm: false}, action) {
                 ...state,
                 all: newAddedLabelMessages
             }
-            case REMOVE_LABEL:
+        case REMOVE_LABEL:
             const newRemovedLabelMessages = state.all.map(element => {
                 if (element.selected) {
                     element.labels = element.labels.filter(element => element !== action.label)
