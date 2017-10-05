@@ -43,18 +43,9 @@ export function starMessage(message) {
 
 export const TOGGLE_COMPOSE_FORM = 'TOGGLE_COMPOSE_FORM'
 
-export function toggleComposeForm(composeForm) {
-    return (dispatch) => {
-        dispatch({
-            type: TOGGLE_COMPOSE_FORM,
-            composeForm,
-        })
-    }
-}
-
 export const MESSAGE_SUBMITTED = 'MESSAGE_SUBMITTED'
 
-export function composeMessage(messageBody) {
+export function composeMessage(messageBody, history) {
     return async (dispatch) => {
         const response = await fetch('api/messages', {
             method: 'POST',
@@ -70,6 +61,8 @@ export function composeMessage(messageBody) {
             type: MESSAGE_SUBMITTED,
             newMessage: responseJson,
         })
+
+        history.push('/')
     }
 }
 
@@ -178,4 +171,22 @@ const patchMethod = (body) => {
             'Accept': 'application/json',
         },
     })
+}
+
+export const EXPAND_MESSAGE = 'EXPAND_MESSAGE'
+
+export function expandMessage(messageId) {
+    return async (dispatch) => {
+        const patchBody = {
+            messageIds: [messageId],
+            command: 'read',
+            read: true,
+        }
+        await patchMethod(patchBody)
+
+        dispatch({
+            type: EXPAND_MESSAGE,
+            messageId,
+        })
+    }
 }

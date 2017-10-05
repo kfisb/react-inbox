@@ -1,18 +1,24 @@
 import React from 'react'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
-import {toggleComposeForm} from "../actions/index"
+import {Link, Route, Switch, withRouter} from 'react-router-dom'
+import {
+    applyLabel,
+    deleteMessages,
+    messagesRead,
+    messagesUnread,
+    removeLabel,
+    toolbarMessageSelection
+} from "../actions/index";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
 
 const Toolbar = ({
                      messages,
-                     handleToolbarMessageCheckboxClick,
-                     handleMarkAsRead,
-                     handleMarkAsUnread,
-                     handleDeleteMessages,
-                     handleApplyLabel,
-                     handleRemoveLabel,
-                     composeForm,
-                     composeMessage,
+                     toolbarMessageSelection,
+                     messagesRead,
+                     messagesUnread,
+                     deleteMessages,
+                     applyLabel,
+                     removeLabel,
                  }) => {
 
     let isMessagesSelected = true
@@ -28,9 +34,41 @@ const Toolbar = ({
     const unreadMessages = messages.filter(element => element.read === false)
 
 
-    const toggleComposeForm = () => {
-        composeMessage(!composeForm)
+    const handleToolbarMessageCheckboxClick = () => {
+        toolbarMessageSelection()
     }
+
+    const handleMarkAsRead = () => {
+        const messageIds = messages
+            .filter(element => element.selected === true)
+            .map(element => element.id)
+        messagesRead(messageIds)
+    }
+
+    const handleMarkAsUnread = () => {
+        const messageIds = messages
+            .filter(element => element.selected === true)
+            .map(element => element.id)
+        messagesUnread(messageIds)
+    }
+
+    const handleDeleteMessages = () => {
+        const messageIds = messages
+            .filter(element => element.selected)
+            .map(element => element.id)
+        deleteMessages(messageIds)
+    }
+
+    const handleApplyLabel = (e) => {
+        const messageIds = messages.filter(element => element.selected).map(element => element.id)
+        applyLabel(messageIds, e.target.value)
+    }
+
+    const handleRemoveLabel = (e) => {
+        const messageIds = messages.filter(element => element.selected).map(element => element.id)
+        removeLabel(messageIds, e.target.value)
+    }
+
 
     return (
         <div className="row toolbar">
@@ -40,9 +78,18 @@ const Toolbar = ({
                     {unreadMessages.length === 1 ? `unread message` : `unread messages`}
                 </p>
 
-                <a className="btn btn-danger" onClick={toggleComposeForm}>
-                    <i className="fa fa-plus"></i>
-                </a>
+                <Switch>
+                    <Route exact path="/" render={props => (
+                        <Link to="/compose" className="btn btn-danger">
+                            <i className="fa fa-plus"></i>
+                        </Link>
+                    )}/>
+                    <Route path="/compose" render={props => (
+                        <Link to="/" className="btn btn-danger">
+                            <i className="fa fa-plus"></i>
+                        </Link>
+                    )}/>
+                </Switch>
 
                 <button className="btn btn-default" onClick={handleToolbarMessageCheckboxClick}>
                     <i className={checkedMessagesStyle}></i>
@@ -89,11 +136,15 @@ const Toolbar = ({
 
 const mapStateToProps = state => ({
     messages: state.messages.all,
-    composeForm: state.messages.composeForm,
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    composeMessage: toggleComposeForm,
+    messagesRead,
+    messagesUnread,
+    toolbarMessageSelection,
+    deleteMessages,
+    applyLabel,
+    removeLabel,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(Toolbar)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Toolbar))

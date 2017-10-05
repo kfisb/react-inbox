@@ -4,22 +4,23 @@ import {connect} from 'react-redux'
 
 const MessageList = ({
                          messages,
-                         checkboxChange,
-                         starChange,
-                     }) => (
-    <div>
-        {messages.map((message, index) =>
-            <Message
-                key={index}
-                index={index}
-                message={message}
-                checkboxChange={checkboxChange}
-                starChange={starChange}
-            />)}
-    </div>
-)
+                     }) => {
+    return (
+        <div>
+            {messages.map((message, index) =>
+                <Message
+                    key={index}
+                    index={index}
+                    message={message}
+                />
+            )
+            }
+        </div>
+    )
+}
 
 const mapStateToProps = state => ({
     messages: state.messages.all,
 })
-export default connect(mapStateToProps)(MessageList)
+
+export default connect(mapStateToProps, null)(MessageList)

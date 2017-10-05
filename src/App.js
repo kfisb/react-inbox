@@ -6,6 +6,7 @@ class App extends Component {
 
 
     render() {
+        const {match} = this.props
         // const seedData = [
         //     {
         //         "id": 1,
@@ -68,7 +69,8 @@ class App extends Component {
         // ]
         return (
             <div className="App">
-                <Inbox/>
+                {/*<Inbox match={match}/>*/}
+                <Inbox />
             </div>
         );
     }

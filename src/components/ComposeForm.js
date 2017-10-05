@@ -2,8 +2,9 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {composeMessage} from "../actions/index"
+import {withRouter} from 'react-router-dom'
 
-const ComposeForm = ({composeMessage}) => {
+const ComposeForm = ({composeMessage, history}) => {
 
     const onSubmitForm = (e) => {
         e.preventDefault()
@@ -13,7 +14,7 @@ const ComposeForm = ({composeMessage}) => {
             body: e.target.body.value,
         }
 
-        composeMessage(postBody)
+        composeMessage(postBody, history)
     }
 
     return (
@@ -45,10 +46,8 @@ const ComposeForm = ({composeMessage}) => {
     )
 }
 
-const mapStateToProps = state => ({})
-
 const mapDispatchToProps = dispatch => bindActionCreators({
     composeMessage: composeMessage,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(ComposeForm)
+export default withRouter(connect(null, mapDispatchToProps)(ComposeForm))
