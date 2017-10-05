@@ -79,13 +79,13 @@ const Toolbar = ({
                 </p>
 
                 <Switch>
-                    <Route exact path="/" render={props => (
-                        <Link to="/compose" className="btn btn-danger">
+                    <Route path="/compose" render={ () => (
+                        <Link to="/" className="btn btn-danger">
                             <i className="fa fa-plus"></i>
                         </Link>
                     )}/>
-                    <Route path="/compose" render={props => (
-                        <Link to="/" className="btn btn-danger">
+                    <Route path="/" render={ () => (
+                        <Link to="/compose" className="btn btn-danger">
                             <i className="fa fa-plus"></i>
                         </Link>
                     )}/>
