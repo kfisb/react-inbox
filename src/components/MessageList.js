@@ -1,6 +1,7 @@
 import React from 'react'
 import Message from './Message'
 import {connect} from 'react-redux'
+import {withRouter} from "react-router-dom";
 
 const MessageList = ({
                          messages,
@@ -23,4 +24,4 @@ const mapStateToProps = state => ({
     messages: state.messages.all,
 })
 
-export default connect(mapStateToProps, null)(MessageList)
+export default withRouter(connect(mapStateToProps, null)(MessageList))

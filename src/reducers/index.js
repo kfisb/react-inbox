@@ -2,7 +2,6 @@ import {combineReducers} from 'redux'
 import {
     APPLY_LABEL,
     DELETE_MESSAGES,
-    EXPAND_MESSAGE,
     MESSAGE_SELECTION,
     MESSAGE_SUBMITTED,
     MESSAGES_READ,
@@ -11,6 +10,7 @@ import {
     REMOVE_LABEL,
     STAR_MESSAGE,
     TOOLBAR_MESSAGE_SELECTION,
+    MESSAGE_BODY,
 } from '../actions'
 
 function messages(state = {all: [], composeForm: false}, action) {
@@ -19,6 +19,11 @@ function messages(state = {all: [], composeForm: false}, action) {
             return {
                 ...state,
                 all: action.messages,
+            }
+        case MESSAGE_BODY:
+            return {
+                ...state,
+                messageBody: action.messageBody,
             }
         case MESSAGE_SUBMITTED:
             return {
@@ -120,16 +125,6 @@ function messages(state = {all: [], composeForm: false}, action) {
             return {
                 ...state,
                 all: activeMessages,
-            }
-        case EXPAND_MESSAGE:
-            let expandedMessage = state.all.find(element => element.id === action.messageId)
-            expandedMessage.read = true
-            return {
-                ...state,
-                all: [
-                    ...state.all,
-                    expandedMessage,
-                ],
             }
         default:
             return state

@@ -11,6 +11,20 @@ export function fetchMessages() {
     }
 }
 
+export const MESSAGE_BODY = 'MESSAGE_BODY'
+
+export function fetchMessageBody(messageId) {
+    return async (dispatch) => {
+        const messageResponse = await fetch(`/api/messages/${messageId}`)
+        const messageJson = await messageResponse.json()
+
+        dispatch({
+            type: MESSAGE_BODY,
+            messageBody: messageJson.body,
+        })
+    }
+}
+
 export const MESSAGE_SELECTION = 'MESSAGE_SELECTION'
 
 export function messageSelection(selected, index) {
@@ -171,22 +185,4 @@ const patchMethod = (body) => {
             'Accept': 'application/json',
         },
     })
-}
-
-export const EXPAND_MESSAGE = 'EXPAND_MESSAGE'
-
-export function expandMessage(messageId) {
-    return async (dispatch) => {
-        const patchBody = {
-            messageIds: [messageId],
-            command: 'read',
-            read: true,
-        }
-        await patchMethod(patchBody)
-
-        dispatch({
-            type: EXPAND_MESSAGE,
-            messageId,
-        })
-    }
 }
