@@ -87,7 +87,6 @@ function messages(state = {all: [], composeForm: false}, action) {
                 all: updatedReadMessages,
             }
         case MESSAGE_READ:
-            debugger
             let index = state.all.findIndex(message => message.id === action.messageId)
             return {
                 ...state,
