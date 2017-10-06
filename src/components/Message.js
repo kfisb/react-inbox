@@ -53,7 +53,7 @@ const Message = ({
                     {message.labels.map((label, i) =>
                         <span key={i} className="label label-warning">{label}</span>
                     )}
-                    <Link to={`messages/${message.id}`} replace>
+                    <Link to={`messages/${message.id}`}>
                         {message.subject}
                     </Link>
                 </div>

@@ -11,6 +11,7 @@ import {
     STAR_MESSAGE,
     TOOLBAR_MESSAGE_SELECTION,
     MESSAGE_BODY,
+    MESSAGE_READ,
 } from '../actions'
 
 function messages(state = {all: [], composeForm: false}, action) {
@@ -84,6 +85,16 @@ function messages(state = {all: [], composeForm: false}, action) {
             return {
                 ...state,
                 all: updatedReadMessages,
+            }
+        case MESSAGE_READ:
+            debugger
+            let index = state.all.findIndex(message => message.id === action.messageId)
+            return {
+                ...state,
+                all: [
+                    ...state.all,
+                    ...state.all[index].read = true,
+                ]
             }
         case MESSAGES_UNREAD:
             const updatedUnreadMessages = state.all.map(element => {

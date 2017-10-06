@@ -1,17 +1,18 @@
 import React from 'react'
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
-import {fetchMessageBody} from "../actions/index";
+import {fetchMessageBody, messageRead} from "../actions/index";
 import {bindActionCreators} from "redux";
 
 class MessageBody extends React.Component {
     componentDidMount() {
         this.props.fetchMessageBody(this.props.messageId)
+        this.props.messageRead(this.props.messageId)
     }
-
-    componentWillUpdate() {
-        this.props.fetchMessageBody(this.props.messageId)
-    }
+    //
+    // componentWillUpdate() {
+    //     this.props.fetchMessageBody(this.props.messageId)
+    // }
 
     render() {
         return (
@@ -31,6 +32,7 @@ const mapStateToProps = (state, {messageId}) => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     fetchMessageBody,
+    messageRead,
 }, dispatch)
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MessageBody))

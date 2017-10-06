@@ -55,8 +55,6 @@ export function starMessage(message) {
     }
 }
 
-export const TOGGLE_COMPOSE_FORM = 'TOGGLE_COMPOSE_FORM'
-
 export const MESSAGE_SUBMITTED = 'MESSAGE_SUBMITTED'
 
 export function composeMessage(messageBody, history) {
@@ -93,6 +91,24 @@ export function messagesRead(messageIds) {
 
         dispatch({
             type: MESSAGES_READ,
+        })
+    }
+}
+
+export const MESSAGE_READ = 'MESSAGE_READ'
+
+export function messageRead(messageId) {
+    return async (dispatch) => {
+        const patchBody = {
+            messageIds: [messageId],
+            command: 'read',
+            read: true,
+        }
+        await patchMethod(patchBody)
+
+        dispatch({
+            type: MESSAGE_READ,
+            messageId,
         })
     }
 }
